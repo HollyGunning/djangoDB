@@ -14,9 +14,7 @@ class SignUpTests(TestCase):
         self.response = self.client.get(url)
 
     def test_signup_status_code(self):
-        url = reverse('signup')
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEquals(self.response.status_code, 200)
 
     def test_signup_url_resolves_signup_view(self):
         view = resolve('/signup/')
@@ -31,8 +29,7 @@ class SignUpTests(TestCase):
 
     def test_form_inputs(self):
         '''
-        The view must contain five inputs: csrf, username, email,
-        password1, password2
+        The view must contain five inputs: csrf, username, email, password1, password2
         '''
         self.assertContains(self.response, '<input', 5)
         self.assertContains(self.response, 'type="text"', 1)
@@ -44,6 +41,7 @@ class SuccessfulSignUpTests(TestCase):
         url = reverse('signup')
         data = {
             'username': 'john',
+            'email': 'john@doe.com',
             'password1': 'abcdef123456',
             'password2': 'abcdef123456'
         }
@@ -62,8 +60,7 @@ class SuccessfulSignUpTests(TestCase):
     def test_user_authentication(self):
         '''
         Create a new request to an arbitrary page.
-        The resulting response should now have a `user` to its context,
-        after a successful sign up.
+        The resulting response should now have an `user` to its context, after a successful sign up.
         '''
         response = self.client.get(self.home_url)
         user = response.context.get('user')
