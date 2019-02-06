@@ -116,9 +116,6 @@ class PasswordResetConfirmTests(TestCase):
         self.assertContains(self.response, '<input', 3)
         self.assertContains(self.response, 'type="password"', 2)
 
-
-
-
 class InvalidPasswordResetConfirmTests(TestCase):
     def setUp(self):
         user = User.objects.create_user(username='john', email='john@doe.com', password='123abcdef')
@@ -141,3 +138,15 @@ class InvalidPasswordResetConfirmTests(TestCase):
         password_reset_url = reverse('password_reset')
         self.assertContains(self.response, 'invalid password reset link')
         self.assertContains(self.response, 'href="{0}"'.format(password_reset_url))
+
+class PasswordResetCompleteTests(TestCase):
+    def setUp(self):
+        url = reverse('password_reset_complete')
+        self.response = self.client.get(url)
+
+    def test_status_code(self):
+        self.assertEquals(self.response.status_code, 200)
+
+    def test_view_function(self):
+        view = resolve('/reset/complete/')
+        self.assertEquals(view.func.view_class, auth_views.PasswordResetCompleteView)
